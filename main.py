@@ -2,6 +2,8 @@ import customtkinter
 from keyboard import keyboard
 import time
 
+customtkinter.set_appearance_mode("Dark")
+
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
