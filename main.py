@@ -3,16 +3,24 @@ import geneticAlgorithm
 
 app = display.App()
 
-population = geneticAlgorithm.initPopulation(10)
-keyboard = iter(population)
-app.motherKeyboard(next(keyboard))
-app.fatherKeyboard(next(keyboard))
+population = geneticAlgorithm.initPopulation(100)
+with open("test.txt", "r") as f:
+    text = f.read()
 
-app.after(1000, lambda : app.motherKeyboard(nextKeyboard()))
+parents = []
 
-def nextKeyboard():
-    if next(keyboard, False):
-        app.after(1000, lambda : app.motherKeyboard(nextKeyboard()))
-    return next(keyboard, "qwertyuiopasdfghjkl;zxcvbnm,.?")
+for i in range(100):
+    parents.append(population[:2])
+    population = geneticAlgorithm.nextPopulation(population, "Hi", "lfp")
+
+def nextGeneration(genNumber):
+    print(genNumber)
+    if genNumber == 100:
+        return
+    app.motherKeyboard(parents[genNumber][0])
+    app.fatherKeyboard(parents[genNumber][1])
+    app.after(5000, lambda : nextGeneration(genNumber + 1))
+
+nextGeneration(0)
 
 app.mainloop()
