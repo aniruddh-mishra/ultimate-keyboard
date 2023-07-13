@@ -1,5 +1,6 @@
 import random
 import distanceAlgorithms
+import ergoAlgorithms
 
 def initPopulation(popSize):
     alphabet = list("abcdefghijklmnopqrstuvwxyz.,?;")
@@ -17,21 +18,26 @@ def newKeyboard(alphabet):
         keyboard.append(letter)
     return keyboard
 
-def fitnessTest(keyboard):
-    with open("test.txt", "r") as f:
-        text = f.read()
-        return distanceAlgorithms.checkDistance(keyboard, text, "rfp")
+def fitnessTest(population, typing, text):
+    results = []
+    for keyboard in population:
+        ergoResult = ergoAlgorithms.checkErgo(keyboard, text, typing)
+        distanceResult = distanceAlgorithms.checkDistance(keyboard, text, typing)
+        results.append((ergoResult, distanceResult, "".join(keyboard)))
+    rankings = sorted(results, key=lambda result: result[0] + result[1])
+    return [ranking[2] for ranking in rankings]
+
+def rankSelection(rankings):
+    weights=[len(rankings) - i for i in range(len(rankings))]
+    mother = random.choices(rankings, weights=weights)[0]
+    father = random.choices(rankings, weights=weights)[0]
+    return [mother, father]
 
 if __name__ == "__main__":
     population = initPopulation(100)
-    fittestScore = fitnessTest(population[0])
-    fittestKeyboard = population[0]
-    for keyboard in population[1:]:
-        score = fitnessTest(keyboard)
-        if score < fittestScore:
-            fittestScore = score
-            fittestKeyboard = keyboard
-        print(score)
-    print(fittestKeyboard)
-    print(fittestScore)
+    with open("test.txt", "r") as f:
+        text = f.read()
+    rankings = fitnessTest(population, "rfp", "Hi")
+    print(rankings)
+    print(rankSelection(rankings))
 

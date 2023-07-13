@@ -87,7 +87,6 @@ def layoutToCoordinate(layout, letter):
             elif row == 2:
                 offset = 0.8
             return (row, letters.index(letter) + offset)
-    print(letter)
     return -1
 
 if __name__ == "__main__":
