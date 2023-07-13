@@ -57,6 +57,18 @@ def crossover(firstParent, secondParent, crossoverPoint):
 def layoutToList(layout):
     return layout[0] + layout[1] + layout[2]
 
+def mutation(keyboard):
+    if random.randint(0, 9) <= 2:
+        mutate(keyboard)
+    return keyboard
+
+def mutate(keyboard):
+    characters = random.sample(range(0, 29), 2)
+    temp = keyboard[characters[0]]
+    keyboard[characters[0]] = keyboard[characters[1]]
+    keyboard[characters[1]] = temp
+    return keyboard
+
 def nextPopulation(population, text, typing):
     popSize = len(population)
     newPop = []
@@ -68,8 +80,8 @@ def nextPopulation(population, text, typing):
     while newPopSize < popSize:
         parents = rankSelection(rankings)
         children = mateKeyboards(parents[0], parents[1])
-        # TODO: Add Mutation Function
-        newPop.extend(children)
+        for child in children:
+            newPop.append(mutation(child))
         newPopSize += 2
 
     return newPop 
@@ -82,6 +94,4 @@ if __name__ == "__main__":
         print(population)
         print(population[:2])
         population = nextPopulation(population, "Hi", "rfp")
-    
-
 
