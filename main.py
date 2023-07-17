@@ -4,21 +4,19 @@ import geneticAlgorithm
 app = display.App()
 
 POP_SIZE = 10
-GENERATIONS = 100
+GENERATIONS = 1000
 VISUALIZE = False
 
 population = geneticAlgorithm.initPopulation(POP_SIZE)
 with open("test.txt", "r") as f:
     text = f.read()
 
-text = "hi"
-
 parents = []
 
-for i in range(100):
+for i in range(GENERATIONS):
     print(i)
     parents.append(population[:2])
-    population = geneticAlgorithm.nextPopulation(population, text, "rfp")
+    population = geneticAlgorithm.nextPopulation(population, text, "nt")
 
 def nextGeneration(genNumber):
     if genNumber == GENERATIONS:

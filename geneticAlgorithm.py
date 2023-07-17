@@ -58,7 +58,7 @@ def layoutToList(layout):
     return layout[0] + layout[1] + layout[2]
 
 def mutation(keyboard):
-    if random.randint(0, 9) <= 2:
+    if random.randint(0, 9) <= 8:
         mutate(keyboard)
     return keyboard
 

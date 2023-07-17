@@ -1,31 +1,38 @@
 def checkDistance(layout, word, algorithm):
-    algorithms = {
-            "rfp": rightHandFingerPecking,
-            "lfp": leftHandFingerPecking
+    numFingers = {
+            "rfp": 1,
+            "lfp": 1,
+            "tft": 2,
+            "nt": 8
             }
-    layout = listToLayout(layout)
-    algorithm = algorithms[algorithm]
+    numFinger = numFingers[algorithm]
     word = removeDuplicates(word).lower()
-    return algorithm(layout, word)
+    fingerMap, fingerPositions = generateMap(numFinger, algorithm)
+    return nFingerTyping(fingerMap, fingerPositions, word, layout)
 
-def nFingerTyping(numFingers, word, layout):
-    fingerMap, fingerPositions = generateMap(numFingers)
-    naturalPosition = fingerPositions
+def nFingerTyping(fingerMap, fingerPositions, word, layout):
+    naturalPosition = fingerPositions.copy()
     distance = 0
     for letter in word:
         if letter == " ":
-            fingerMap = naturalPosition
+            fingerPositions = naturalPosition
+       
+        if letter not in layout:
+            continue
+
+        
         letterIndex = layout.index(letter)
-        finger = fingerMap[letter]
+        finger = fingerMap[letterIndex]
         currentPosition = fingerPositions[finger]
-        letterCoordinate = letterToCoordinate(letter)
+        letterCoordinate = letterToCoordinate(letterIndex)
         fingerPositions[finger] = letterCoordinate
         distance += distanceBetweenCoordinates(letterCoordinate, currentPosition)
+    
     return distance
 
 def letterToCoordinate(letter): 
-    row = int(key/10)
-    col = key - (row * 10)
+    row = int(letter/10)
+    col = letter - (row * 10)
     return (row, col)
 
 def distanceBetweenCoordinates(coordinateOne, coordinateTwo):
@@ -54,11 +61,13 @@ def generateMap(numFingers, typingStyle):
     fingerLayouts = {
             1: [(0, 0, 3, 10)],
             2: [(0, 0, 3, 5), (0, 5, 3, 10)],
+            8: [(0, 0, 3, 1), (0, 1, 3, 2), (0, 2, 3, 3), (0, 3, 3, 5), (0, 5, 3, 7), (0, 7, 3, 8), (0, 8, 3, 9), (0, 9, 3, 10)]
             }
     startingPositions = {
             "rfp": [(1, 6)],
-            "lfp": [(1, 3.2)],
-            "tft": [(1, 3.2), (1, 6)]
+            "lfp": [(1, 3)],
+            "tft": [(1, 3), (1, 6)],
+            "nt": [(1, 0), (1, 1), (1, 2), (1, 3), (1, 6), (1, 7), (1, 8), (1, 9)]
             }
     positions = fingerLayouts[numFingers]
     keyboardMap = {}
@@ -66,7 +75,6 @@ def generateMap(numFingers, typingStyle):
         for pos, finger in enumerate(positions):
             if keyInRange(finger, i):
                 keyboardMap[i] = pos
-    
     return keyboardMap, startingPositions[typingStyle]
             
 def keyInRange(fingerRange, key):
@@ -89,9 +97,6 @@ def removeDuplicates(word):
             previousLetter = letter
     return newWord
 
-def listToLayout(layoutList):
-    return [layoutList[:10], layoutList[10:20], layoutList[20:30]]
-
 def pythagoreanTheorem(deltaX, deltaY):
     return (deltaX ** 2 + deltaY ** 2) ** 0.5
 
@@ -101,3 +106,5 @@ if __name__ == "__main__":
     print(f"Total Distance for '{word}'")
     print("Right Hand Finger Pecking: " + str(checkDistance(qwerty, word, "rfp")))
     print("Left Hand Finger Pecking: " + str(checkDistance(qwerty, word, "lfp")))
+    print("Two Finger Typing: " + str(checkDistance(qwerty, word, "tft")))
+    print("Normal Typing: " + str(checkDistance(qwerty, word, "nt")))
