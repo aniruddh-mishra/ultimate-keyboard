@@ -11,6 +11,8 @@ population = geneticAlgorithm.initPopulation(POP_SIZE)
 with open("test.txt", "r") as f:
     text = f.read()
 
+text = "hello world"
+
 parents = []
 
 for i in range(GENERATIONS):

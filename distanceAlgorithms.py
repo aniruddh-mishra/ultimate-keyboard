@@ -42,21 +42,6 @@ def distanceBetweenCoordinates(coordinateOne, coordinateTwo):
     col2 = coordinateTwo[1] + row2 ** 2 /10
     return pythagoreanTheorem(row2 - row1, col2 - col1)
 
-def spaceBarDistance(coordinate, spacebarCol=False):
-    if coordinate == -1:
-        return 0, spacebarCol
-    if coordinate[1] <= 2.8:
-        col = 2.8
-    elif coordinate[1] >= 6.8:
-        col = 6.8
-    else:
-        col = coordinate[1]
-    if spacebarCol:
-        col = spacebarCol
-    deltaCol = coordinate[1] - col
-    deltaRow = 3 - coordinate[0]
-    return pythagoreanTheorem(deltaCol, deltaRow), col
-
 def generateMap(numFingers, typingStyle):
     fingerLayouts = {
             1: [(0, 0, 3, 10)],
