@@ -8,51 +8,32 @@ def checkDistance(layout, word, algorithm):
     word = removeDuplicates(word).lower()
     return algorithm(layout, word)
 
-def rightHandFingerPecking(layout, word):
-    origin = (1, 6.2)
-    word = word.lower()
-    previousCoordinate = layoutToCoordinate(layout, word[0])
-    startDistance = distanceCoordinates(origin, previousCoordinate)
-    return startDistance + fingerPecking(layout, word, previousCoordinate)
-
-def leftHandFingerPecking(layout, word):
-    origin = (1, 3.2)
-    word = word.lower()
-    previousCoordinate = layoutToCoordinate(layout, word[0])
-    startDistance = distanceCoordinates(origin, previousCoordinate)
-    return startDistance + fingerPecking(layout, word, previousCoordinate)
-
-def fingerPecking(layout, word, previousCoordinate):
-    distanceTotal = 0 
-    spacebarCol = False
-
-    for letter in word[1:]:
-        coordinate = layoutToCoordinate(layout, letter)
-        if not coordinate:
-            distance, spacebarCol = spaceBarDistance(previousCoordinate)
-        elif not previousCoordinate:
-            distance, spacebarCol = spaceBarDistance(coordinate, spacebarCol)
-        else:
-            distance = distanceCoordinates(previousCoordinate, coordinate)
-        previousCoordinate = coordinate
-        distanceTotal += distance
-
-    return distanceTotal
-
-def removeDuplicates(word):
-    newWord = ""
-    previousLetter = ""
+def nFingerTyping(numFingers, word, layout):
+    fingerMap, fingerPositions = generateMap(numFingers)
+    naturalPosition = fingerPositions
+    distance = 0
     for letter in word:
-        if letter != previousLetter:
-            newWord += letter
-            previousLetter = letter
-    return newWord
+        if letter == " ":
+            fingerMap = naturalPosition
+        letterIndex = layout.index(letter)
+        finger = fingerMap[letter]
+        currentPosition = fingerPositions[finger]
+        letterCoordinate = letterToCoordinate(letter)
+        fingerPositions[finger] = letterCoordinate
+        distance += distanceBetweenCoordinates(letterCoordinate, currentPosition)
+    return distance
 
-def listToLayout(layoutList):
-    return [layoutList[:10], layoutList[10:20], layoutList[20:30]]
+def letterToCoordinate(letter): 
+    row = int(key/10)
+    col = key - (row * 10)
+    return (row, col)
 
-def pythagoreanTheorem(deltaX, deltaY):
-    return (deltaX ** 2 + deltaY ** 2) ** 0.5
+def distanceBetweenCoordinates(coordinateOne, coordinateTwo):
+    row1 = coordinateOne[0]
+    col1 = coordinateOne[1] + row1 ** 2 / 10
+    row2 = coordinateTwo[0]
+    col2 = coordinateTwo[1] + row2 ** 2 /10
+    return pythagoreanTheorem(row2 - row1, col2 - col1)
 
 def spaceBarDistance(coordinate, spacebarCol=False):
     if coordinate == -1:
@@ -69,25 +50,50 @@ def spaceBarDistance(coordinate, spacebarCol=False):
     deltaRow = 3 - coordinate[0]
     return pythagoreanTheorem(deltaCol, deltaRow), col
 
-def distanceCoordinates(coordinateOne, coordinateTwo):
-    if coordinateOne == -1 or coordinateTwo == -1:
-        return 0
-    deltaRow = coordinateOne[0] - coordinateTwo[0]
-    deltaCol = coordinateOne[1] - coordinateTwo[1]
-    return pythagoreanTheorem(deltaRow, deltaCol)
+def generateMap(numFingers, typingStyle):
+    fingerLayouts = {
+            1: [(0, 0, 3, 10)],
+            2: [(0, 0, 3, 5), (0, 5, 3, 10)],
+            }
+    startingPositions = {
+            "rfp": [(1, 6)],
+            "lfp": [(1, 3.2)],
+            "tft": [(1, 3.2), (1, 6)]
+            }
+    positions = fingerLayouts[numFingers]
+    keyboardMap = {}
+    for i in range(30):
+        for pos, finger in enumerate(positions):
+            if keyInRange(finger, i):
+                keyboardMap[i] = pos
     
-def layoutToCoordinate(layout, letter):
-    if letter == " ":
-        return False
-    for row, letters in enumerate(layout):
-        if letter in letters:
-            offset = 0
-            if row == 1:
-                offset = 0.2
-            elif row == 2:
-                offset = 0.8
-            return (row, letters.index(letter) + offset)
-    return -1
+    return keyboardMap, startingPositions[typingStyle]
+            
+def keyInRange(fingerRange, key):
+    row, col = letterToCoordinate(key)
+
+    inRow = row in range(fingerRange[0], fingerRange[2])
+    inCol = col in range(fingerRange[1], fingerRange[3])
+    
+    if inRow and inCol:
+        return True
+    
+    return False
+
+def removeDuplicates(word):
+    newWord = ""
+    previousLetter = ""
+    for letter in word:
+        if letter != previousLetter:
+            newWord += letter
+            previousLetter = letter
+    return newWord
+
+def listToLayout(layoutList):
+    return [layoutList[:10], layoutList[10:20], layoutList[20:30]]
+
+def pythagoreanTheorem(deltaX, deltaY):
+    return (deltaX ** 2 + deltaY ** 2) ** 0.5
 
 if __name__ == "__main__":
     qwerty = list("qwertyuiopasdfghjkl;zxcvbnm,.")
