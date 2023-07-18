@@ -52,6 +52,8 @@ def runSim(generations, algorithm, popSize, text):
         bestKeyboards.append(population[:2])
         population = geneticAlgorithm.nextPopulation(population, text, algorithm)
 
+    print('\n')
+
     return bestKeyboards
 
 def helpDocs():
@@ -98,6 +100,6 @@ def updateStatus(progress, generations):
     progress = int(percent * 0.2)
     complete = "=" * progress
     remainder = " " * (20 - progress)
-    print("\r[" + complete + remainder + "]" + str(round(percent, 2)) + "%", end="")
+    print("\r[" + complete + remainder + "] " + str(round(percent, 2)) + "%", end="")
 
 main()

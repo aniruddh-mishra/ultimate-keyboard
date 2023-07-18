@@ -59,6 +59,10 @@ if __name__ == "__main__":
         generations = data['generations']
         print(f"This simulation had a population size of {data['popSize']} and ran for {generations} generations. It was trained with the text {data['text'][:100]} for the {data['algorithm']} typing style.")
     bestKeyboards = data['bestKeyboards']
-    nextGeneration(0, generations, bestKeyboards, app)
 
+    if int(args[1]):
+        nextGeneration(0, generations, bestKeyboards, app)
+    else:
+        nextGeneration(generations - 1, generations, bestKeyboards, app)
+    
     app.mainloop()
