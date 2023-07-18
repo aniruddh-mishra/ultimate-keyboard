@@ -8,7 +8,7 @@ import uuid
 def main():
     app = display.App()
 
-    if sys.argv[1] in ["-h", "--help"]:
+    if len(sys.argv) > 1 and sys.argv[1] in ["-h", "--help"]:
         helpDocs()
         return
 
@@ -23,6 +23,8 @@ def main():
     app.mainloop()
 
 def saveData(bestKeyboards, text, visualize, algorithm, popSize, generations):
+    print("Writing data ...")
+
     data = {
             "text": text,
             "algorithm": algorithm,
@@ -32,9 +34,13 @@ def saveData(bestKeyboards, text, visualize, algorithm, popSize, generations):
             "bestKeyboards": bestKeyboards
             }
     jsonData = json.dumps(data)
+    
+    fileName = str(uuid.uuid4()) + ".json"
 
-    with open(f"outputs/{uuid.uuid4()}.json", "w") as f:
+    with open(f"outputs/{fileName}", "w") as f:
         f.write(jsonData)
+
+    print("Simulation has been saved in outputs/" + fileName)
 
 def runSim(generations, algorithm, popSize, text):  
     population = geneticAlgorithm.initPopulation(popSize)
@@ -92,6 +98,6 @@ def updateStatus(progress, generations):
     progress = int(percent * 0.2)
     complete = "=" * progress
     remainder = " " * (20 - progress)
-    print("[" + complete + remainder + "]" + str(round(percent, 2)) + "%\r", end="")
+    print("\r[" + complete + remainder + "]" + str(round(percent, 2)) + "%", end="")
 
 main()
