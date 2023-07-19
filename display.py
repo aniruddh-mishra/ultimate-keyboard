@@ -1,7 +1,5 @@
 import customtkinter
 
-customtkinter.set_appearance_mode("Dark")
-
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
@@ -57,7 +55,7 @@ if __name__ == "__main__":
     with open(args[0], 'r') as f:
         data = json.load(f)
         generations = data['generations']
-        print(f"This simulation had a population size of {data['popSize']} and ran for {generations} generations. It was trained with the text {data['text'][:100]} for the {data['algorithm']} typing style.")
+        print(f"This simulation had a population size of {data['popSize']} and ran for {generations} generations. It was trained with the text \"{data['text'][:100]}\" for the {data['algorithm']} typing style.")
     bestKeyboards = data['bestKeyboards']
 
     if int(args[1]):
