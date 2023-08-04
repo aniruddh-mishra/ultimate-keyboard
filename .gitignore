@@ -10,6 +10,15 @@ cache/
 # C extensions
 *.so
 
+# Presentation
+presentation/*
+!presentation/*.sty
+!presentation/bibliography.bib 
+!presentation/images
+!presentation/LICENSE
+!presentation/README.md 
+!presentation/presentation.tex
+
 # Distribution / packaging
 .Python
 build/
